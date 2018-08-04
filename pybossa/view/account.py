@@ -32,12 +32,12 @@ import time
 
 from flask import Blueprint, request, url_for, flash, redirect, abort
 from flask import render_template, current_app
-from flask.ext.login import login_required, login_user, logout_user, \
+from flask_login import login_required, login_user, logout_user, \
     current_user
 from rq import Queue
 
 import pybossa.model as model
-from flask.ext.babel import gettext
+from flask_babel import gettext
 from flask_wtf.csrf import generate_csrf
 from flask import jsonify
 from pybossa.core import signer, uploader, sentinel, newsletter
@@ -559,7 +559,11 @@ def update_profile(name):
         return abort(404)
     ensure_authorized_to('update', user)
     show_passwd_form = True
+<<<<<<< HEAD
+    if user.twitter_user_id or user.google_user_id or user.facebook_user_id or user.wechat_user_id:
+=======
     if user.twitter_user_id or user.google_user_id or user.facebook_user_id or user.wechat_user_id or user.weibo_user_id:
+>>>>>>> 50e8dffbc99e0d2fcaf0cc2b857823a36f284a9f
         show_passwd_form = False
     usr = cached_users.get_user_summary(name)
     # Extend the values
