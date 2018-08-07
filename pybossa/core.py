@@ -270,7 +270,7 @@ def setup_babel(app):
     @babel.localeselector
     def _get_locale():
         locales = [l[0] for l in app.config.get('LOCALES')]
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             lang = current_user.locale
         else:
             lang = request.cookies.get('language')
@@ -301,7 +301,7 @@ def setup_blueprints(app):
     from pybossa.view.amazon import blueprint as amazon
 
     blueprints = [{'handler': home, 'url_prefix': '/'},
-                  {'handler': api,  'url_prefix': '/api'},
+                  {'handler': api, 'url_prefix': '/api'},
                   {'handler': account, 'url_prefix': '/account'},
                   {'handler': projects, 'url_prefix': '/project'},
                   {'handler': admin, 'url_prefix': '/admin'},
@@ -317,7 +317,7 @@ def setup_blueprints(app):
         app.register_blueprint(bp['handler'], url_prefix=bp['url_prefix'])
 
     from rq_dashboard import RQDashboard
-    RQDashboard(app, url_prefix='/admin/rq', auth_handler=current_user)
+    RQDashboard(app, url_prefix='/admin/rq')
 
 
 def setup_external_services(app):
@@ -573,7 +573,7 @@ def setup_hooks(app):
     @app.context_processor
     def _global_template_context():
         notify_admin = False
-        if (current_user and current_user.is_authenticated()
+        if (current_user and current_user.is_authenticated
             and current_user.admin):
             key = NEWS_FEED_KEY + str(current_user.id)
             if sentinel.slave.get(key):
@@ -591,7 +591,7 @@ def setup_hooks(app):
         # Announcement sections
         if app.config.get('ANNOUNCEMENT'):
             announcement = app.config['ANNOUNCEMENT']
-            if current_user and current_user.is_authenticated():
+            if current_user and current_user.is_authenticated:
                 for key in announcement.keys():
                     if key == 'admin' and current_user.admin:
                         flash(announcement[key], 'info')

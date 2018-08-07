@@ -21,7 +21,6 @@ from flask_login import current_user
 from flask_login import current_user
 from pybossa.model.category import Category
 from flask import Blueprint
-from flask import render_template
 from pybossa.cache import projects as cached_projects
 from pybossa.cache import users as cached_users
 from pybossa.cache import categories as cached_cat
@@ -46,7 +45,7 @@ def home():
         data = dict(featured=[])
     # Add historical contributions
     historical_projects = []
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         user_id = current_user.id
         historical_projects = cached_users.projects_contributed(user_id, order_by='last_contribution')[:3]
         data['historical_contributions'] = historical_projects

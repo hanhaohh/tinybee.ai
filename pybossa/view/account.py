@@ -80,7 +80,7 @@ def index(page=1):
     if not accounts and page != 1:
         abort(404)
     pagination = Pagination(page, per_page, count)
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         user_id = current_user.id
     else:
         user_id = None
@@ -160,7 +160,7 @@ def signin():
     if request.method == 'POST' and not form.validate():
         flash(gettext('Please correct the errors'), 'error')
     auth = {'twitter': False, 'facebook': False, 'google': False, 'wechat': False, 'weibo' : False}
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         # If Twitter is enabled in config, show the Twitter Sign in button
         if (isLdap is False):
             for isp in OAuthProviders:
@@ -357,7 +357,7 @@ def newsletter_subscribe():
 
     """
     # Save that we've prompted the user to sign up in the newsletter
-    if newsletter.is_initialized() and current_user.is_authenticated():
+    if newsletter.is_initialized() and current_user.is_authenticated:
         next_url = request.args.get('next') or url_for('home.home')
         user = user_repo.get(current_user.id)
         if current_user.newsletter_prompted is False:
@@ -429,9 +429,9 @@ def _update_user_with_valid_email(user, email_addr):
 @blueprint.route('/profile', methods=['GET'])
 def redirect_profile():
     """Redirect method for profile."""
-    if current_user.is_anonymous():  # pragma: no cover
+    if current_user.is_anonymous:  # pragma: no cover
         return redirect_content_type(url_for('.signin'), status='not_signed_in')
-    if (request.headers.get('Content-Type') == 'application/json') and current_user.is_authenticated():
+    if (request.headers.get('Content-Type') == 'application/json') and current_user.is_authenticated:
         form = None
         if current_app.config.upref_mdata:
             form_data = cached_users.get_user_pref_metadata(current_user.name)
@@ -460,9 +460,9 @@ def profile(name):
         form = UserPrefMetadataForm(**form_data)
         form.set_upref_mdata_choices()
 
-    if current_user.is_anonymous() or (user.id != current_user.id):
+    if current_user.is_anonymous or (user.id != current_user.id):
         return _show_public_profile(user, form)
-    if current_user.is_authenticated() and user.id == current_user.id:
+    if current_user.is_authenticated and user.id == current_user.id:
         return _show_own_profile(user, form)
 
 
@@ -472,7 +472,7 @@ def _show_public_profile(user, form):
     projects_created = cached_users.public_published_projects_cached(user.id)
 
     can_update = False
-    if current_user.is_authenticated() and current_user.admin:
+    if current_user.is_authenticated and current_user.admin:
         draft_projects = cached_users.draft_projects(user.id)
         projects_created.extend(draft_projects)
         can_update = True
@@ -559,11 +559,7 @@ def update_profile(name):
         return abort(404)
     ensure_authorized_to('update', user)
     show_passwd_form = True
-<<<<<<< HEAD
-    if user.twitter_user_id or user.google_user_id or user.facebook_user_id or user.wechat_user_id:
-=======
     if user.twitter_user_id or user.google_user_id or user.facebook_user_id or user.wechat_user_id or user.weibo_user_id:
->>>>>>> 50e8dffbc99e0d2fcaf0cc2b857823a36f284a9f
         show_passwd_form = False
     usr = cached_users.get_user_summary(name)
     # Extend the values
@@ -929,7 +925,7 @@ def add_metadata(name):
             user_dict = cached_users.public_get_user_summary(user.name)
         projects_contributed = cached_users.projects_contributed_cached(user.id)
         projects_created = cached_users.published_projects_cached(user.id)
-        if current_user.is_authenticated() and current_user.admin:
+        if current_user.is_authenticated and current_user.admin:
             draft_projects = cached_users.draft_projects(user.id)
             projects_created.extend(draft_projects)
         title = "%s &middot; User Profile" % user.name
@@ -960,7 +956,7 @@ def get_user_pref_and_metadata(user_name, form):
         return user_pref, metadata
 
     if form.validate():
-        admin = user_name if current_user.is_anonymous() else current_user.name
+        admin = user_name if current_user.is_anonymous else current_user.name
         metadata = dict(admin=admin, time_stamp=time.ctime(),
                         user_type=form.user_type.data, work_hours_from=form.work_hours_from.data,
                         work_hours_to=form.work_hours_to.data, review=form.review.data,
