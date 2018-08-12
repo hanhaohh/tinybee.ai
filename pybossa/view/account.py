@@ -39,7 +39,7 @@ from rq import Queue
 import pybossa.model as model
 from flask_babel import gettext
 from flask_wtf.csrf import generate_csrf
-from flask import jsonify
+from flask import request, jsonify
 from pybossa.core import signer, uploader, sentinel, newsletter
 from pybossa.util import Pagination, handle_content_type
 from pybossa.util import get_user_signup_method
@@ -50,8 +50,9 @@ from pybossa.util import fuzzyboolean
 from pybossa.cache import users as cached_users
 from pybossa.auth import ensure_authorized_to
 from pybossa.jobs import send_mail, export_userdata, delete_account
-from pybossa.core import user_repo, ldap
+from pybossa.core import user_repo, auditlog_repo, ldap
 from pybossa.feed import get_update_feed
+from pybossa.auditlogger import AuditLogger
 from pybossa.messages import *
 from pybossa import otp
 
@@ -62,6 +63,8 @@ from pybossa.forms.forms import UserPrefMetadataForm, RegisterFormWithUserPrefMe
 from werkzeug.datastructures import MultiDict
 
 blueprint = Blueprint('account', __name__)
+
+auditlogger = AuditLogger(auditlog_repo, caller='web') # FIXME: caller - web, or else
 
 mail_queue = Queue('email', connection=sentinel.master)
 export_queue = Queue('high', connection=sentinel.master)
@@ -152,6 +155,7 @@ def signin():
                                  consent=False)
                 _create_account(user_data, ldap_disabled=False)
             else:
+                auditlogger.log_event(None, user, 'login', request.remote_addr, False, True)
                 login_user(user_db, remember=True)
         else:
             msg = gettext("User LDAP credentials are wrong.")
@@ -179,6 +183,7 @@ def signin():
 
 def _sign_in_user(user):
     login_user(user, remember=True)
+    auditlogger.log_event(None, user, 'login', request.remote_addr, False, True)
     if (current_app.config.get('MAILCHIMP_API_KEY') and
             newsletter.ask_user_to_subscribe(user)):
         return redirect_content_type(url_for('account.newsletter_subscribe',
@@ -254,6 +259,7 @@ def signout():
     Returns a redirection to PYBOSSA home page.
 
     """
+    auditlogger.log_event(None, current_user, 'logout', request.remote_addr, False, True)
     logout_user()
     flash(gettext('You are now signed out'), SUCCESS)
     return redirect_content_type(url_for('home.home'), status=SUCCESS)

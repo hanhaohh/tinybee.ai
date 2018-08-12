@@ -27,7 +27,6 @@ from pybossa.model.project import Project
 from pybossa.leaderboard.data import get_leaderboard as gl
 from pybossa.leaderboard.jobs import leaderboard as lb
 
-
 session = db.slave_session
 
 
@@ -50,6 +49,7 @@ def get_user_summary(name):
                "user".google_user_id, "user".info, "user".admin, "user".weibo_user_id,
                "user".locale, "user".balance, "user".withdrawn,
                "user".email_addr, COUNT(task_run.user_id) AS n_answers,
+               SUM(task_run.earning) as pending,
                "user".valid_email, "user".confirmation_email_sent
                FROM "user"
                LEFT OUTER JOIN task_run ON "user".id=task_run.user_id
@@ -74,7 +74,6 @@ def get_user_summary(name):
                     confirmation_email_sent=row.confirmation_email_sent,
                     registered_ago=pretty_date(row.created))
     if user:
-        user['pending'] = get_pending_earning(user['id'])
         rank_score = rank_and_score(user['id'])
         user['rank'] = rank_score['rank']
         user['score'] = rank_score['score']
@@ -97,11 +96,12 @@ def public_get_user_summary(name):
 @memoize(timeout=timeouts.get('USER_TIMEOUT'))
 def get_pending_earning(user_id):
     """Return pending revenue for a user. """
+    pending_earning = 0.0
     sql = text('''SELECT SUM(earning) as pending_earning FROM task_run WHERE user_id=:user_id and checked=false''')
     results = session.execute(sql, dict(user_id=user_id))
-    pending_earning = 0.0
-    for row in results:
-        pending_earning = row.pending_earning
+    for row in results: 
+        if row[0] != None: 
+            pending_earning = row.pending_earning
     return pending_earning
 
 @memoize(timeout=timeouts.get('USER_TIMEOUT'))

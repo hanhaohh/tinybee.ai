@@ -40,8 +40,8 @@ class AuditLogger(object):
             new_value = json.dumps(new_value)
 
         log = Auditlog(
-            project_id=project.id,
-            project_short_name=project.short_name,
+            project_id=project.id if project != None else 0,
+            project_short_name=project.short_name if project != None else '-',
             user_id=user.id,
             user_name=user.name,
             action=action,

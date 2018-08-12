@@ -39,7 +39,8 @@ class Auditlog(db.Model, DomainObject):
     #: Nickname of the user
     user_name = Column(Text, nullable=False)
     #: UTC timestamp when the Category was created
-    created = Column(Text, default=make_timestamp, nullable=False)
+    # created = Column(Text, default=make_timestamp, nullable=False)
+    timestamp = Column(Text, default=make_timestamp, nullable=False)
     #: Action taken
     action = Column(Text, nullable=False)
     #: Caller: which process initiated the action: API or WEB
