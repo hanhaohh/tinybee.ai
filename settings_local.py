@@ -41,7 +41,8 @@ LOGO = 'tinybee_logo.png'
 COPYRIGHT = 'TinyBee'
 DESCRIPTION = 'A tiny tiny tiny bee'
 TERMSOFUSE = ''
-THEME = 'default'
+#THEME = 'default'
+THEME = 'tinybeebj'
 #THEME = 'libcrowds-pybossa-theme'
 #DATAUSE =
 CONTACT_EMAIL = 'info@tinybee.ai'
@@ -63,7 +64,9 @@ GOOGLE_CLIENT_SECRET='1'
 ## this wont work.
 #ln -s pybossa/themes/your-theme/translations pybossa/translations
 DEFAULT_LOCALE = 'en'
-LOCALES = [('en', 'English'), ('es', u'Español'), ('cn', u'简体中文'),
+LOCALES = [('en', 'English'), 
+            ('es', u'Español'), 
+           ('zh', u'简体中文'),
            ('it', 'Italiano'), ('fr', u'Français'),
            ('ja', u'日本語'),('pt_BR','Brazilian Portuguese')]
 
@@ -80,10 +83,10 @@ LOCALES = [('en', 'English'), ('es', u'Español'), ('cn', u'简体中文'),
 # Sentry configuration
 # SENTRY_DSN=''
 ## set path to enable
-# LOG_FILE = '/path/to/log/file'
+# LOG_FILE = '/tinybee/tinybee.log'
 ## Optional log level
-# import logging
-# LOG_LEVEL = logging.DEBUG
+import logging
+LOG_LEVEL = logging.DEBUG
 
 ## Mail setup
 MAIL_SERVER = 'localhost'
@@ -124,7 +127,7 @@ UPLOAD_FOLDER = 'uploads'
 # RACKSPACE_REGION = 'ORD'
 
 ## Default number of users shown in the leaderboard
-# LEADERBOARD = 20
+LEADERBOARD = 20
 ## Default shown presenters
 # PRESENTERS = ["basic", "image", "sound", "video", "map", "pdf"]
 # Default Google Docs spreadsheet template tasks URLs
@@ -224,7 +227,7 @@ LIBSASS_STYLE = 'compressed'
 
 
 # Enable two factor authentication
-# ENABLE_TWO_FACTOR_AUTH = True
+ENABLE_TWO_FACTOR_AUTH = False
 
 # Strong password policy for user accounts
 # ENABLE_STRONG_PASSWORD = True

@@ -449,6 +449,7 @@ def redirect_profile():
 
 
 @blueprint.route('/<name>/', methods=['GET'])
+@login_required
 def profile(name):
     """
     Get user profile.
@@ -516,6 +517,21 @@ def _show_own_profile(user, form):
                     form=form,
                     can_update=True)
 
+    return handle_content_type(response)
+
+@blueprint.route('/<name>/wallet')
+@login_required
+def wallet(name):
+    user = user_repo.get_by_name(name)
+    if not user:
+        return abort(404)
+    if current_user.name != name:
+        return abort(403)
+
+    user = user_repo.get(current_user.id)
+    response = dict(template='account/wallet.html',
+                    title=gettext("Wallet")
+                    )
     return handle_content_type(response)
 
 

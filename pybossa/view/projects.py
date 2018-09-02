@@ -163,7 +163,7 @@ def index(page):
     else:
         categories = cached_cat.get_all()
         print (categories)
-        cat_short_name = categories[0].short_name
+        cat_short_name = categories[0].short_name if len(categories) > 0 else ''
         return redirect_content_type(url_for('.project_cat_index', category=cat_short_name))
 
 
