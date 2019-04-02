@@ -1,3 +1,8 @@
-[submodule "themes"]
-	path = themes
-	url = git@github.com:influencerplus123/pybossa-default-theme.git
+[submodule "pybossa/themes/default"]
+	path = pybossa/themes/default
+	url = https://github.com/PyBossa/pybossa-default-theme.git
+
+[submodule "pybossa/themes/tinybeebj"]
+	path = pybossa/themes/tinybeebj
+	url = https://github.com/sfluo/tinybee-pybossa-theme.git
+
